@@ -1,0 +1,14 @@
+{
+    "name": "react-simple-gesture-demo",
+    "private": true,
+    "version": "0.1.0",
+    "description": "",
+    "homepage": "",
+    "author": "Michael Becker <michael@bemit.codes>",
+    "license": "MIT",
+    "dependencies": {
+        "react": "^16.12",
+        "react-dom": "^16.12",
+        "react-simple-gestures": "*"
+    }
+}

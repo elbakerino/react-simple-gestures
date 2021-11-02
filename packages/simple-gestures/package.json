@@ -1,0 +1,46 @@
+{
+    "name": "react-simple-gestures",
+    "version": "0.0.1",
+    "description": "Hook to do stuff on touch and/or mouse events.",
+    "homepage": "https://simple-gestures.bemit.codes",
+    "author": "Michael Becker <michael@bemit.codes>",
+    "license": "MIT",
+    "keywords": [
+        "touch-gesture",
+        "swipe",
+        "gesture",
+        "react-component",
+        "react"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/elbakerino/react-simple-gestures.git",
+        "directory": "packages/simple-gestures"
+    },
+    "bugs": {
+        "url": "https://github.com/elbakerino/react-simple-gestures/issues"
+    },
+    "main": "index.js",
+    "module": "esm/index.js",
+    "scripts": {
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rm -rf build/**/*.test.*",
+        "__release": "cp package.json build/ && cp package-lock.json build/ && cp README.md build/ && npm publish build"
+    },
+    "devDependencies": {
+        "@types/react": "^16.8.6 || ^17.0.0",
+        "react": "^16.12",
+        "react-dom": "^16.12"
+    },
+    "peerDependencies": {
+        "react": "^16.8 || ^17.0",
+        "@types/react": "^16.8.6 || ^17.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@types/react": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
