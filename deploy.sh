@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >.npmrc
+echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+      registry=https://registry.npmjs.org/
+      always-auth=true" >.npmrc
 
 echo "Token length: ${#NPM_TOKEN}"
 
