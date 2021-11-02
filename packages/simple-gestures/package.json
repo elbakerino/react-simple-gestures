@@ -1,6 +1,6 @@
 {
     "name": "react-simple-gestures",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Hook to do stuff on touch and/or mouse events.",
     "homepage": "https://simple-gestures.bemit.codes",
     "author": "Michael Becker <michael@bemit.codes>",
