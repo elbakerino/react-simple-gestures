@@ -8,7 +8,7 @@ export const GestureArea: React.ComponentType<{
     {
         disableScrolling,
         setDisableScrolling,
-    }
+    },
 ) => {
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
