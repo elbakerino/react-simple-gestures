@@ -1,4 +1,4 @@
-name: DynamoDB Visualizer
+name: Simple Gestures
 
 env:
     DOCKER_BUILDKIT: 1
@@ -45,12 +45,23 @@ jobs:
                     npm run bootstrap && npm run hoist
                     npm test
                     npm run build
+                    cp ./static-htaccess ./build/.htaccess
+
             -   name: Send code coverage report to Codecov.io
                 uses: codecov/codecov-action@v1
                 with:
                     token: ${{ secrets.CODECOV_TOKEN }}
-            -   run: ./deploy.sh
+            -   name: Publish to NPM
+                run: ./deploy.sh
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-
+            -   name: Deploy to Server!
+                env:
+                    NODE_ENV: production
+                    GIT_BRANCH: ${{ steps.vars.outputs.short_ref }}
+                    AUTH0_ID: ${{ secrets.AUTH0_ID }}
+                    AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
+                    DEPLOYER_HOST: ${{ secrets.DEPLOYER_HOST }}
+                    AUTH0_AUDIENCE: https://schema-registry.bemit.codes
+                    AUTH0_ISSUER: https://schema-registry.eu.auth0.com
+                run: node --unhandled-rejections=strict deploy.js deploy

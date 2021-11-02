@@ -29,12 +29,15 @@
         "@types/react-router-dom": "^5.1.7",
         "@types/testing-library__jest-dom": "^5.14.0",
         "assert": "^2.0.0",
+        "cloud-buddy": "^0.0.7",
         "cross-env": "^6.0.3",
+        "deployer-buddy": "^0.1.2",
         "lerna": "^3.22.1",
+        "lerna-packer": "0.2.9",
         "merge-dirs": "^0.2.1",
         "process": "^0.11.10",
-        "symlink-dir": "^3.1.1",
-        "lerna-packer": "0.2.9"
+        "rimraf": "^2.7.1",
+        "symlink-dir": "^3.1.1"
     },
     "jest-runner-eslint": {
         "cliOptions": {
