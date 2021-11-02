@@ -45,7 +45,7 @@ jobs:
                     npm run bootstrap && npm run hoist
                     npm test
                     npm run build
-                    cp ./static-htaccess ./build/.htaccess
+                    cp ./static-htaccess ./dist/demo/.htaccess
 
             -   name: Send code coverage report to Codecov.io
                 uses: codecov/codecov-action@v1

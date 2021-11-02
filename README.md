@@ -21,12 +21,14 @@ import {
 
 const SomeComponent = () => {
     const {
+        // default handler for usage with touch gestures
         handler,
-        // optional also use the mouse handler to also listen for click/drag-style events
+        // mouse handler to listen for non-touch events
         handlerMouse,
+        // use this to add your listeners to any event
         addListener,
     } = useSimpleGestures({
-        // only count it as `left/right/up/down` after a change of px on an axis:
+        // only count it as `left/right/up/down` after a change of px on an axis
         minMovementX: 50,
         minMovementY: 50,
     })
@@ -50,7 +52,7 @@ const SomeComponent = () => {
             }
         })
 
-        // don't forget to clean them up on unmount:
+        // don't forget to unsubscribe them on unmount:
         return () => {
             unsubStart()
             unsubMove()
@@ -63,6 +65,8 @@ const SomeComponent = () => {
             width: 500,
             height: 500,
         }}
+        // spread the handler on to the element, they are just `onMouseDown`, `onTouchStart` etc.
+        // use those wanted, either both or just one `handler` = `touch`, `handlerMouse` = `mouse`
         {...handler}
         {...handlerMouse}
     />
