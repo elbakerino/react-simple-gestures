@@ -54,7 +54,7 @@ jobs:
             -   name: Publish to NPM
                 run: ./deploy.sh
                 env:
-                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             -   name: Deploy to Server!
                 env:
                     NODE_ENV: production

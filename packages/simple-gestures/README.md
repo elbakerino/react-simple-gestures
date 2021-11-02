@@ -2,6 +2,8 @@
 
 Hook to listen for simple touch and/or mouse gestures on components.
 
+[Demo, Docs + Source](https://github.com/elbakerino/react-simple-gestures)
+
 ## Versions
 
 For updates see [github release notes](https://github.com/elbakerino/react-simple-gestures/releases).
