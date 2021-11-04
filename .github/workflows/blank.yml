@@ -55,7 +55,7 @@ jobs:
                 with:
                     token: ${{ secrets.CODECOV_TOKEN }}
 
-            -   name: Publish App image `main` with tag `latest`
+            -   name: Publish to NPM
                 if: startsWith(github.ref, 'refs/tags/')
                 run: |
                     ./deploy.sh

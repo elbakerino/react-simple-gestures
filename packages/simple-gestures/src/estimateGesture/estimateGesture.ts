@@ -65,9 +65,12 @@ export const estimateGesture = (
     const mPxPerMsY = Number((posMovedY * 1000 / duration).toFixed(0))
 
     return {
+        time: now,
         duration: duration,
         dirY: nameDirY,
         dirX: nameDirX,
+        lastX: lastX,
+        lastY: lastY,
         startX: startX,
         startY: startY,
         // @ts-ignore

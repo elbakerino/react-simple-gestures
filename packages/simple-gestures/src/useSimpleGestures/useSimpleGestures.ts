@@ -32,8 +32,7 @@ export const useSimpleGestures = (
     } as SimpleGesturesInternalState)
 
     const onStart: SimpleGesturesEventHandler['onStart'] = React.useCallback((x, y, e) => {
-        const {lastEndTime} = gestureRef.current
-
+        const {lastEndTime, lastStartTime} = gestureRef.current
         const started = setTouchStart(gestureRef.current, x, y, touchGrid, touchAsSameTap)
         gestureRef.current = started
 
@@ -49,7 +48,7 @@ export const useSimpleGestures = (
                     startX: x,
                     startY: y,
                     startTime: started.lastStartTime,
-                    lastStartTime: started.lastStartTime,
+                    lastStartTime: lastStartTime,
                     lastEndTime: lastEndTime,
                 },
                 e,

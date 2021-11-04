@@ -33,6 +33,7 @@ export interface SimpleGesturesActions {
 }
 
 export interface SimpleGesturesResult {
+    time: number
     duration: number
     dirY: SimpleGesturesDirections['directionY']
     dirX: SimpleGesturesDirections['directionX']
@@ -47,6 +48,8 @@ export interface SimpleGesturesResult {
     movedY: number
     startX: number
     startY: number
+    lastX: number
+    lastY: number
     // milli px per milli second velocity for X-axis
     mPxPerMsX: number
     // milli px per milli second velocity for Y-axis

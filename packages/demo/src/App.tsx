@@ -2,14 +2,14 @@ import React from 'react'
 import { GestureArea } from './GestureArea'
 
 export const App: React.ComponentType<{}> = () => {
-    const [disableScrolling, setDisableScrolling] = React.useState<boolean>(false)
     return <div style={{
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        background: '#020a0b',
+        //background: '#020a0b',
+        background: '#121313',
         color: '#ffffff',
-        overflow: disableScrolling ? 'hidden' : 'auto',
+        overflow: 'auto',
     }}>
         <div style={{margin: '12px auto'}}>
             <h1 style={{fontWeight: 300, fontSize: '2rem', marginBottom: 8}}>Simple Gestures</h1>
@@ -30,10 +30,7 @@ export const App: React.ComponentType<{}> = () => {
             </p>
         </div>
 
-        <GestureArea
-            disableScrolling={disableScrolling}
-            setDisableScrolling={setDisableScrolling}
-        />
+        <GestureArea/>
 
         <div style={{margin: 'auto auto 8px auto'}}>
             <p>by <a href={'https://mlbr.xyz'}>Michael Becker</a></p>

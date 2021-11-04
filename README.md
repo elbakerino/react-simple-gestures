@@ -34,7 +34,7 @@ const SomeComponent = () => {
     })
 
     React.useEffect(() => {
-        // register an listener on `start`, `move` or/and `end` events
+        // register listeners on `start`, `move` and `end` events
 
         const unsubStart = addListener('start', (evt: SimpleGesturesResultStart, e: TouchEvent | MouseEvent) => {
         })
