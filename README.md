@@ -8,11 +8,15 @@
 
 Hook to listen for simple touch and/or mouse gestures on components.
 
-Easily detect the direction at the end of a touch or mouse/drag-movement, use `mPxPerMs` (milli-px-per-milli-second) to determine if it was a longer slide or more a flick or just a tap.
+Easily detect the [direction](#directions) at the end of a touch or mouse/drag-movement, use `mPxPerMs` (milli-px-per-milli-second) to determine if it was a longer slide or more a flick or just a tap.
 
 [Demo to flick 'n swipe.](https://simple-gestures.bemit.codes), here is [the demo code](./packages/demo/src/GestureArea.tsx)
 
-Simply use the `useSimpleGestures` hook and add the handlers to your wanted component.
+Simply use the `useSimpleGestures` hook and add the handlers to your wanted component with `addListener`.
+
+```shell
+npm i --save react-simple-gestures
+```
 
 ```tsx
 import {
@@ -117,8 +121,8 @@ The XY-axis is built using the other two.
 
 ### Move & End
 
-- `duration: number` in `ms` since `start`
 - `time: number` of event in UTC ms
+- `duration: number` in `ms` since `start`
 - `touches: number` number of active touches, only for multi-touch
 - `dir`, `dirX`, `dir`: see above [directions](#directions)
 - `posMovedX: number`, always `positive` number of px moved on the X-axis
@@ -129,12 +133,35 @@ The XY-axis is built using the other two.
 - `startY: number`
 - `lastX: number`
 - `lastY: number`
+- `lastOffsetX: number`
+- `lastOffsetY: number`
 - `mPxPerMsY: number`, milli px per milli second velocity for Y-axis
 - `mPxPerMsX: number`, milli px per milli second velocity for X-axis
+
+### Typings
+
+Checkout [packages/simple-gestures/src/SimpleGestures.ts](./packages/simple-gestures/src/SimpleGestures.ts) for further infos and the most important interfaces.
+
+If you get errors related to `TouchEvent` or `MouseEvent` typings, it's important to use the ones exported by react:
+
+```ts
+import { TouchEvent, MouseEvent } from 'react'
+```
 
 ## Versions
 
 This project adheres to [semver](https://semver.org/), until `1.0.0` and beginning with `0.1.0`: all `0.x.0` releases are like MAJOR releases and all `0.0.x` like MINOR or PATCH, modules below `0.1.0` should be considered experimental.
+
+## Develop
+
+1. Clone/fork repository
+2. `npm i`
+3. `npm run bootstrap && npm run hoist`
+4. Now run either:
+    - `npm start` for launching demo app compilation of packages
+    - `npm test` for running tests
+    - `npm run tdd` for running tests in watch mode
+    - `npm run build` for building the demo app and packages
 
 ## License
 

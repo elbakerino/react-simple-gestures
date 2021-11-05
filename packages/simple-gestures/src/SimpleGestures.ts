@@ -28,11 +28,13 @@ export interface SimpleGesturesEventHandlerMouse {
 
 export interface SimpleGesturesResult {
     time: number
-    touches: number
     duration: number
+    touches: number
+
     dirY: SimpleGesturesDirections['directionY']
     dirX: SimpleGesturesDirections['directionX']
     dir: SimpleGesturesDirections['directionDiagonal'] | SimpleGesturesDirections['directionX'] | SimpleGesturesDirections['directionY'] | SimpleGesturesDirections['directionPoint']
+
     // always `positive` number of px moved on the X-axis
     posMovedX: number
     // always `positive` number of px moved on the Y-axis
@@ -41,12 +43,15 @@ export interface SimpleGesturesResult {
     movedX: number
     // `negative` or `positive` number of px moved on the Y-axis
     movedY: number
+
     startX: number
     startY: number
     lastX: number
     lastY: number
+
     lastOffsetX: number
     lastOffsetY: number
+
     // milli px per milli second velocity for X-axis
     mPxPerMsX: number
     // milli px per milli second velocity for Y-axis
@@ -63,7 +68,7 @@ export interface SimpleGesturesResultStart {
     lastEndTime: number
 }
 
-export interface SimpleGesturesListenerType {
+export interface SimpleGesturesListenerTypes {
     start: simpleGesturesListenerStart
     move: simpleGesturesListener
     end: simpleGesturesListener
@@ -72,7 +77,7 @@ export interface SimpleGesturesListenerType {
 export type simpleGesturesListenerUnsub = () => void
 export type simpleGesturesListener = (gesture: SimpleGesturesResult, e: TouchEvent | MouseEvent) => void
 export type simpleGesturesListenerStart = (start: SimpleGesturesResultStart, e: TouchEvent | MouseEvent) => void
-export type addSimpleGesturesListener = <A extends keyof SimpleGesturesListenerType = keyof SimpleGesturesListenerType>(on: A, listener: SimpleGesturesListenerType[A]) => simpleGesturesListenerUnsub
+export type addSimpleGesturesListener = <A extends keyof SimpleGesturesListenerTypes = keyof SimpleGesturesListenerTypes>(on: A, listener: SimpleGesturesListenerTypes[A]) => simpleGesturesListenerUnsub
 
 export interface SimpleGesturesOptions {
     // grid in which to count taps as the same than previous
