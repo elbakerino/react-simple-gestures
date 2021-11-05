@@ -16,12 +16,5 @@ This project is free software distributed under the **MIT License**.
 
 See: [LICENSE](https://github.com/elbakerino/react-simple-gestures/blob/master/LICENSE).
 
-© 2021 Michael Becker
+© 2021 [Michael Becker](https://mlbr.xyz)
 
-### Contributors
-
-By committing your code/creating a pull request to this repository you agree to release the code under the MIT License attached to the repository.
-
-***
-
-Created by [Michael Becker](https://mlbr.xyz)

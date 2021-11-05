@@ -1,8 +1,17 @@
 import React from 'react'
 import { SimpleGesturesResult, useSimpleGestures } from 'react-simple-gestures'
 
-export const GestureArea: React.ComponentType<{}> = () => {
+export const GestureArea: React.ComponentType<{
+    scrollWrapper: React.MutableRefObject<HTMLDivElement | null>
+}> = (
+    {
+        scrollWrapper,
+    },
+) => {
+
+    // states only for this demo:
     const [startPoint, setStartPoint] = React.useState({
+        taps: 0,
         ol: 0,
         ot: 0,
         oh: 0,
@@ -11,17 +20,31 @@ export const GestureArea: React.ComponentType<{}> = () => {
         startX: -1,
         startY: -1,
     })
+    const lastDir = React.useRef<undefined | string>(undefined)
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
+    const [logEvents, setLogEvents] = React.useState<boolean>(false)
+    // <<
+
+    // setup of SimpleGestures with safe-to-use functions, also `getState` has a safe reference,
+    // e.g. does not re-render/re-create event handlers when updated
     const minMovementY = 25
     const minMovementX = 25
-    const {handler, handlerMouse, addListener} = useSimpleGestures({
+    const {
+        handler, handlerMouse,
+        addListener,
+        getState,
+    } = useSimpleGestures({
         minMovementX: minMovementX,
         minMovementY: minMovementY,
     })
 
     React.useEffect(() => {
         const unsubStart = addListener('start', (evt, e) => {
+            if(logEvents) {
+                e.persist()
+                console.log('start', evt, e)
+            }
             // @ts-ignore
             const oh = e.target.offsetHeight
             // @ts-ignore
@@ -35,6 +58,7 @@ export const GestureArea: React.ComponentType<{}> = () => {
             setLastMove(undefined)
             setLastEnd(undefined)
             setStartPoint({
+                taps: evt.taps,
                 ol: ol,
                 ot: ot,
                 oh: oh,
@@ -44,30 +68,86 @@ export const GestureArea: React.ComponentType<{}> = () => {
                 startY: evt.startY,
             })
         })
-        const unsubMove = addListener('move', (evt/*, e*/) => {
+        const unsubMove = addListener('move', (evt, e) => {
+            if(logEvents) {
+                e.persist()
+                console.log('move', evt, e)
+            }
+            lastDir.current = evt.dir
             setLastMove(evt)
         })
-        const unsubEnv = addListener('end', (evt/*, e*/) => {
+        const unsubEnv = addListener('end', (evt, e) => {
+            if(logEvents) {
+                e.persist()
+                console.log('end', evt, e)
+            }
+            lastDir.current = evt.dir
             setLastEnd(evt)
         })
+
+        // don't forget to unsubscribe it at the end
         return () => {
             unsubStart()
             unsubMove()
             unsubEnv()
         }
-    }, [addListener, setLastEnd, setLastMove])
+    }, [addListener, setLastEnd, setLastMove, logEvents])
+
+    React.useEffect(() => {
+        // used for this demo,
+        // prevents scrolling when already started something
+        const evt = (e: Event) => {
+            const {
+                lastStartTime, lastEndTime,
+            } = getState()
+
+            if(
+                lastStartTime !== -1 &&
+                lastEndTime < lastStartTime
+            ) {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        }
+        const evtTouch = (e: Event) => {
+            const {
+                lastStartTime, lastEndTime,
+            } = getState()
+
+
+            if(
+                lastStartTime !== -1 &&
+                lastEndTime < lastStartTime &&
+                lastDir.current &&
+                lastDir.current !== 'point' &&
+                lastDir.current !== 'up' &&
+                lastDir.current !== 'down'
+            ) {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        }
+        scrollWrapper.current?.addEventListener('wheel', evt)
+        scrollWrapper.current?.addEventListener('keydown', evt)
+        scrollWrapper.current?.addEventListener('touchmove', evtTouch)
+        return () => {
+            scrollWrapper.current?.removeEventListener('wheel', evt)
+            scrollWrapper.current?.removeEventListener('touchmove', evtTouch)
+            scrollWrapper.current?.removeEventListener('keydown', evt)
+        }
+    }, [scrollWrapper, getState, lastDir])
 
     return <>
         <div
             style={{
                 margin: 'auto',
-                width: '50%',
+                width: '75%',
                 height: '50%',
                 minWidth: 300,
-                minHeight: 300,
-                background: '#000000',
+                minHeight: 420,
+                background: '#020a0b',
                 userSelect: 'none',
-                boxShadow: 'inset 0 0 12px 2px #121313',
+                boxShadow: 'inset 0 0 12px 3px #081717',
                 display: 'flex',
                 position: 'relative',
             }}
@@ -106,11 +186,28 @@ export const GestureArea: React.ComponentType<{}> = () => {
                         cy={startPoint.startY - startPoint.ot} r="10"
                         fill={'#ffffff'}/>
                 </> : null}
+
+                {/* Connection Line */}
                 {lastMove && startPoint.startX > 0 && startPoint.startY > 0 ?
                     <path
                         d={`M ${startPoint.startX - startPoint.ol} ${startPoint.startY - startPoint.ot} L ${lastMove.lastX - startPoint.ol} ${lastMove.lastY - startPoint.ot}`}
-                        fill="none" stroke="white" strokeWidth="2"
+                        fill="none"
+                        style={{transition: '50ms ease-in-out stroke'}}
+                        stroke={
+                            lastMove.duration < 100 ? '#ff0000' :
+                                lastMove.duration < 250 ? '#be0000' :
+                                    lastMove.duration < 500 ? '#720000' :
+                                        lastMove.duration < 750 ? '#983000' :
+                                            lastMove.duration < 1000 ? '#8f4701' :
+                                                lastMove.duration < 1200 ? '#be7c00' :
+                                                    lastMove.duration < 1500 ? '#7015c5' :
+                                                        lastMove.duration < 2000 ? '#fc6fd0' :
+                                                            '#ffffff'
+                        }
+                        strokeWidth="2"
                     /> : null}
+
+                {/* End Dot */}
                 {lastEnd && startPoint ?
                     <circle
                         className="spot"
@@ -118,13 +215,40 @@ export const GestureArea: React.ComponentType<{}> = () => {
                         cy={lastEnd.lastY - startPoint.ot} r="10"
                         fill={'#676767'}/>
                     : null}
+                <text
+                    style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 'bold',
+                        fontFamily: 'Monaco, Consolas, monospace',
+                        textAlign: 'center',
+                    }}
+                    fill={'#3bf6ff'}
+                    x={startPoint.startX - startPoint.ol}
+                    y={startPoint.startY - startPoint.ot + 25}
+                >{lastMove?.dir || lastEnd?.dir}</text>
+                <text
+                    style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 'bold',
+                        fontFamily: 'Monaco, Consolas, monospace',
+                    }}
+                    fill={'#104246'}
+                    x={'50%'}
+                    y={'90%'}
+                    textAnchor={'middle'}
+                >
+                    Taps: {startPoint.taps}
+                    {' | '}
+                    Touches: {lastEnd?.touches || lastMove?.touches || 0}
+                </text>
             </svg>
             <i
                 style={{
                     userSelect: 'none',
                     pointerEvents: 'none',
                     margin: 'auto',
-                    opacity: 0.5,
+                    transition: '0.35s ease-in opacity',
+                    opacity: startPoint?.startTime ? 0 : 0.35,
                 }}
             >Swipe, flick or drag here.</i>
         </div>
@@ -139,7 +263,7 @@ export const GestureArea: React.ComponentType<{}> = () => {
                 maxWidth: 600,
             }}
         >
-            <p style={{fontSize: '0.85rem', margin: '12px 0'}}>
+            <p style={{fontSize: '0.85rem', margin: '12px'}}>
                 Configurable minimum movements for direction detection,<br/>
                 green = x-axis, blue = y-axis.
             </p>
@@ -217,5 +341,16 @@ export const GestureArea: React.ComponentType<{}> = () => {
                 </table>
             </div>
         </div>
+        <button
+            onClick={() => setLogEvents(l => !l)}
+            style={{
+                background: 'transparent',
+                border: '1px solid #fff',
+                color: '#ffffff',
+                padding: '4px 6px',
+                width: 175,
+                margin: '6px auto',
+            }}
+        >{logEvents ? 'Turn off logging events' : 'Log events in dev console'}</button>
     </>
 }

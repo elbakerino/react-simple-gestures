@@ -12,7 +12,7 @@ export const setTouchStart = (gestureState: SimpleGesturesInternalState, x: numb
         (now - lastStartTime) < touchAsSameTap &&
         gridX === lastStartGridX && gridY === lastStartGridY
     ) {
-        gestureState.countTaps = gestureState.countTaps + 1
+        gestureState.countTaps++
     } else {
         gestureState.countTaps = 1
     }

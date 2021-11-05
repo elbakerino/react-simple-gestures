@@ -7,6 +7,7 @@ export const estimateGesture = (
     startY: number,
     lastX: number,
     lastY: number,
+    touches: number,
     minMovementX: number,
     minMovementY: number,
 ): SimpleGesturesResult => {
@@ -46,15 +47,15 @@ export const estimateGesture = (
         }
     } else if(nameDirY === 'up') {
         if(nameDirX === 'right') {
-            nameDir = 'left-bottom-right-top'
+            nameDir = 'right-top'
         } else if(nameDirX === 'left') {
-            nameDir = 'right-bottom-left-top'
+            nameDir = 'left-top'
         }
     } else if(nameDirY === 'down') {
         if(nameDirX === 'right') {
-            nameDir = 'left-top-right-bottom'
+            nameDir = 'right-bottom'
         } else if(nameDirX === 'left') {
-            nameDir = 'right-top-left-bottom'
+            nameDir = 'left-bottom'
         }
     }
     const duration = now - lastStartTime
@@ -66,6 +67,7 @@ export const estimateGesture = (
 
     return {
         time: now,
+        touches: touches,
         duration: duration,
         dirY: nameDirY,
         dirX: nameDirX,

@@ -1,7 +1,7 @@
 import { MouseEventHandler, TouchEventHandler, TouchEvent, MouseEvent } from 'react'
 
 export interface SimpleGesturesDirections {
-    directionDiagonal: 'left-bottom-right-top' | 'right-bottom-left-top' | 'left-top-right-bottom' | 'right-top-left-bottom'
+    directionDiagonal: 'right-top' | 'left-top' | 'right-bottom' | 'left-bottom'
     directionX: 'right' | 'left' | 'same'
     directionY: 'up' | 'down' | 'same'
     directionPoint: 'point'
@@ -16,24 +16,19 @@ export interface SimpleGesturesEventHandler {
 export interface SimpleGesturesEventHandlerTouch {
     onTouchStart: TouchEventHandler<any>
     onTouchMove: TouchEventHandler<any>
-    onTouchEnd: SimpleGesturesEventHandler['onEnd']
+    onTouchEnd: TouchEventHandler<any>
 }
 
 export interface SimpleGesturesEventHandlerMouse {
     onMouseDown: MouseEventHandler<any>
     onMouseMove: MouseEventHandler<any>
-    onMouseUp: SimpleGesturesEventHandler['onEnd']
-    onMouseLeave: SimpleGesturesEventHandler['onEnd']
-}
-
-export interface SimpleGesturesActions {
-    handler: SimpleGesturesEventHandlerTouch
-    handlerMouse: SimpleGesturesEventHandlerMouse
-    addListener: addSimpleGesturesListener
+    onMouseUp: MouseEventHandler<any>
+    onMouseLeave: MouseEventHandler<any>
 }
 
 export interface SimpleGesturesResult {
     time: number
+    touches: number
     duration: number
     dirY: SimpleGesturesDirections['directionY']
     dirX: SimpleGesturesDirections['directionX']
@@ -58,6 +53,7 @@ export interface SimpleGesturesResult {
 
 export interface SimpleGesturesResultStart {
     taps: number
+    touches: number
     startX: number
     startY: number
     startTime: number
@@ -85,18 +81,32 @@ export interface SimpleGesturesOptions {
     minMovementX: number
     // min. movement in px, for the Y-axis, before counting it as direction-change
     minMovementY: number
+    // when true, the touch events will not do anything on multi touch
+    noMultiTouch: boolean
 }
 
 export interface SimpleGesturesInternalState {
+    // defaults to `0`
+    touches: number
+    // defaults to `-1`
     startX: number
+    // defaults to `-1`
     lastX: number
+    // defaults to `-1`
     lastStartGridX: number
+    // defaults to `-1`
     startY: number
+    // defaults to `-1`
     lastY: number
+    // defaults to `-1`
     lastStartGridY: number
+    // defaults to `-1`
     lastStartTime: number
+    // defaults to `-1`
     lastTime: number
+    // defaults to `-1`
     lastEndTime: number
+    // defaults to `0`
     countTaps: number
     listeners: {
         start: [number, simpleGesturesListenerStart][]

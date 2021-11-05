@@ -10,7 +10,9 @@ Hook to listen for simple touch and/or mouse gestures on components.
 
 Easily detect the direction at the end of a touch or mouse/drag-movement, use `mPxPerMs` (milli-px-per-milli-second) to determine if it was a longer slide or more a flick or just a tap.
 
-[Demo to flick 'n swipe.](https://simple-gestures.bemit.codes)
+[Demo to flick 'n swipe.](https://simple-gestures.bemit.codes), here is [the demo code](./packages/demo/src/GestureArea.tsx)
+
+Simply use the `useSimpleGestures` hook and add the handlers to your wanted component.
 
 ```tsx
 import {
@@ -27,6 +29,8 @@ const SomeComponent = () => {
         handlerMouse,
         // use this to add your listeners to any event
         addListener,
+        // for usage in other event handlers, get the current internal state
+        getState,
     } = useSimpleGestures({
         // only count it as `left/right/up/down` after a change of px on an axis
         minMovementX: 50,
@@ -40,14 +44,14 @@ const SomeComponent = () => {
         })
 
         const unsubMove = addListener('move', (evt: SimpleGesturesResult, e: TouchEvent | MouseEvent) => {
-            if(evt.dir === 'left' && evt.posMovedX > 50 && evt.mPxPerMsX > 200) {
+            if(evt.dir === 'left' && evt.posMovedX > 150 && evt.mPxPerMsX > 200) {
                 // "flicked" from left to right
                 // adding own "must have moved min px" is easy in the own handlers
             }
         })
 
         const unsubEnd = addListener('end', (evt: SimpleGesturesResult, e: TouchEvent | MouseEvent) => {
-            if(evt.dir === 'left' && evt.posMovedX > 50 && evt.mPxPerMsX > 200) {
+            if(evt.dir === 'left' && evt.posMovedX > 150 && evt.mPxPerMsX > 200) {
                 // same check, but after finishing the drag or touch-slide event
             }
         })
@@ -75,47 +79,53 @@ const SomeComponent = () => {
 
 ## Directions
 
-Directions are collected in three variants:
+Directions are collected in three variants, they describe the movement direction relatively to the start point:
 
 - for `X-Axis`, available in result: `dirX` and `dir`
     - `right`, `left`, `same`
 - for `Y-Axis`, available in result: `dirY` and `dir`
     - `up`, `down`, `same`
 - for `XY-Axis`, available in result: `dir`
-    - `left-bottom-right-top`, `right-bottom-left-top`, `left-top-right-bottom`, `right-top-left-bottom`, `point`
+    - `right-top`, `left-top`, `right-bottom`, `left-bottom`, `point`
 
 The XY-axis is built using the other two.
 
 ## Options
 
-- `touchGrid: number`, grid in which to count taps as the same than previous
+- `touchGrid: number`, grid in which to count taps as the same then previous
 - `touchAsSameTap: number`m in `ms` how long taps after another, in the same grid spot, are counted as the same tap
 - `minMovementX: number`, min. movement in px, for the X-axis, before counting it as direction-change
 - `minMovementY: number`, min. movement in px, for the Y-axis, before counting it as direction-change
+- `noMultiTouch: boolean`, defaults to `false`, when `true` does not execute `move` and `end` actions while the user makes a multi touch
 
 ## Event Results
 
 ### Start
 
 - `taps: number` number of taps in the same `touchGrid` position
+- `touches: number` number of active touches, only for multi-touch
 - `startX: number`
 - `startY: number`
-- `startTime: number`
-- `lastStartTime: number`
-- `lastEndTime: number`
+- `startTime: number` time of this `start` event in UTC ms
+- `lastStartTime: number` time of the previous `start` event in UTC ms
+- `lastEndTime: number` time of the last `end` event in UTC ms
 
 ### Move & End
 
-- `duration: number`
+- `duration: number` in `ms` since `start`
+- `time: number` of event in UTC ms
+- `touches: number` number of active touches, only for multi-touch
 - `dir`, `dirX`, `dir`: see above [directions](#directions)
 - `posMovedX: number`, always `positive` number of px moved on the X-axis
 - `posMovedY: number`, always `positive` number of px moved on the Y-axis
 - `movedX: number`, `negative` or `positive` number of px moved on the X-axis
 - `movedY: number`, `negative` or `positive` number of px moved on the Y-axis
 - `startX: number`
-- `startY: number`, milli px per milli second velocity for X-axis
-- `mPxPerMsX: number`, milli px per milli second velocity for Y-axis
-- `mPxPerMsY: number`
+- `startY: number`
+- `lastX: number`
+- `lastY: number`
+- `mPxPerMsY: number`, milli px per milli second velocity for Y-axis
+- `mPxPerMsX: number`, milli px per milli second velocity for X-axis
 
 ## Versions
 
@@ -127,16 +137,4 @@ This project is free software distributed under the **MIT License**.
 
 See: [LICENSE](LICENSE).
 
-© 2021 bemit UG (haftungsbeschränkt)
-
-### License Icons
-
-The icons in the badges of the readme's are either from [simpleicons](https://simpleicons.org) or are licensed otherwise:
-
-- [Play Icon © Chanut is Industries, CC BY 3.0](https://www.iconfinder.com/icons/928430/go_media_music_play_playing_start_icon)
-- [Experiment Icon © Ardiansyah Ardi, CC BY 3.0](https://www.iconfinder.com/icons/4951169/chemical_experiment_glass_lab_medical_icon)
-- [Doc Icons © PICOL, CC BY 3.0](https://www.iconfinder.com/iconsets/picol-vector)
-
-***
-
-Created by [Michael Becker](https://mlbr.xyz)
+© 2021 [Michael Becker](https://mlbr.xyz)

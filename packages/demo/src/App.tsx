@@ -2,15 +2,20 @@ import React from 'react'
 import { GestureArea } from './GestureArea'
 
 export const App: React.ComponentType<{}> = () => {
-    return <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        //background: '#020a0b',
-        background: '#121313',
-        color: '#ffffff',
-        overflow: 'auto',
-    }}>
+    const scrollWrapper = React.useRef<HTMLDivElement | null>(null)
+    return <div
+        ref={scrollWrapper}
+        style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            //background: '#020a0b',
+            //background: '#121313',
+            background: '#081717',
+            color: '#ffffff',
+            overflow: 'auto',
+        }}
+    >
         <div style={{margin: '12px auto'}}>
             <h1 style={{fontWeight: 300, fontSize: '2rem', marginBottom: 8}}>Simple Gestures</h1>
             <p style={{
@@ -30,7 +35,7 @@ export const App: React.ComponentType<{}> = () => {
             </p>
         </div>
 
-        <GestureArea/>
+        <GestureArea scrollWrapper={scrollWrapper}/>
 
         <div style={{margin: 'auto auto 8px auto'}}>
             <p>by <a href={'https://mlbr.xyz'}>Michael Becker</a></p>
