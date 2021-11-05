@@ -1,6 +1,12 @@
 import { SimpleGesturesInternalState } from 'react-simple-gestures/SimpleGestures'
 
-export const setTouchStart = (gestureState: SimpleGesturesInternalState, now: number, x: number, y: number, touchGrid: number, touchAsSameTap: number): SimpleGesturesInternalState => {
+export const setTouchStart = (
+    gestureState: SimpleGesturesInternalState,
+    now: number,
+    x: number, y: number,
+    touchGrid: number,
+    touchAsSameTap: number,
+): SimpleGesturesInternalState => {
     // todo: the `touch grid` to check the same area of to count taps,
     //       should be normalized by the first touch point, not the page,
     //       resulting in a more correct "same spot" detection

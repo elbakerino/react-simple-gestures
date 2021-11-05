@@ -5,7 +5,7 @@ import {
     SimpleGesturesEventHandlerTouch,
     SimpleGesturesInternalState,
     SimpleGesturesOptions,
-    addSimpleGesturesListener,
+    addSimpleGesturesListener, SimpleGesturesGetOffsetCoordinates,
 } from 'react-simple-gestures/SimpleGestures'
 import { setTouchStart } from 'react-simple-gestures/setTouchStart'
 import { estimateGesture } from 'react-simple-gestures/estimateGesture'
@@ -24,6 +24,7 @@ export const useSimpleGestures = (
         minMovementY = 10,
         minMovementX = 10,
         noMultiTouch = false,
+        getOffset,
     }: Partial<SimpleGesturesOptions> = {},
 ): UseSimpleGestures => {
     const gestureRef = React.useRef({
@@ -32,6 +33,8 @@ export const useSimpleGestures = (
         startX: -1,
         lastX: -1,
         startY: -1,
+        startOffsetX: 0,
+        startOffsetY: 0,
         lastY: -1,
         lastStartGridX: -1,
         lastStartGridY: -1,
@@ -77,6 +80,9 @@ export const useSimpleGestures = (
         const started = setTouchStart(gestureRef.current, now, x, y, touchGrid, touchAsSameTap)
         const {countTaps} = started
         gestureRef.current = started
+        const o = getOffset ? getOffset(e) : undefined
+        gestureRef.current.startOffsetX = o?.x || 0
+        gestureRef.current.startOffsetY = o?.y || 0
 
         if(gestureRef.current.listeners.start.length === 0) {
             return
@@ -97,7 +103,7 @@ export const useSimpleGestures = (
                 e,
             ),
         )
-    }, [gestureRef, touchGrid, touchAsSameTap])
+    }, [getOffset, gestureRef, touchGrid, touchAsSameTap])
 
     const onMove: SimpleGesturesEventHandler['onMove'] = React.useCallback((x, y, e) => {
         if(
@@ -117,10 +123,22 @@ export const useSimpleGestures = (
         if(gestureRef.current.listeners.move.length > 0) {
             const listeners = [...gestureRef.current.listeners.move]
             const {lastStartTime, lastX, lastY, startX, startY, touches} = gestureRef.current
-            const moveResult = estimateGesture(now, lastStartTime, startX, startY, lastX, lastY, touches, minMovementX, minMovementY)
+            const o: SimpleGesturesGetOffsetCoordinates | undefined = getOffset ? getOffset(e) : undefined
+            if(o && typeof o.x !== 'undefined' && typeof o.y !== 'undefined') {
+                o.x = o.x - gestureRef.current.startOffsetX
+                o.y = o.y - gestureRef.current.startOffsetY
+            }
+            const moveResult = estimateGesture(
+                now, lastStartTime,
+                startX, startY,
+                lastX, lastY,
+                o?.x || 0, o?.y || 0,
+                touches,
+                minMovementX, minMovementY,
+            )
             listeners.forEach(([, listener]) => listener(moveResult, e))
         }
-    }, [gestureRef, minMovementX, minMovementY])
+    }, [getOffset, gestureRef, minMovementX, minMovementY])
 
     const onEnd: SimpleGesturesEventHandler['onEnd'] = React.useCallback((e) => {
         if(
@@ -139,11 +157,23 @@ export const useSimpleGestures = (
 
         if(gestureRef.current.listeners.end.length > 0) {
             const {lastStartTime, lastX, lastY, startX, startY, touches} = gestureRef.current
+            const o: SimpleGesturesGetOffsetCoordinates | undefined = getOffset ? getOffset(e) : undefined
+            if(o && typeof o.x !== 'undefined' && typeof o.y !== 'undefined') {
+                o.x = o.x - gestureRef.current.startOffsetX
+                o.y = o.y - gestureRef.current.startOffsetY
+            }
             const listeners = [...gestureRef.current.listeners.end]
-            const result = estimateGesture(now, lastStartTime, startX, startY, lastX, lastY, touches, minMovementX, minMovementY)
+            const result = estimateGesture(
+                now, lastStartTime,
+                startX, startY,
+                lastX, lastY,
+                o?.x || 0, o?.y || 0,
+                touches,
+                minMovementX, minMovementY,
+            )
             listeners.forEach(([, listener]) => listener(result, e))
         }
-    }, [gestureRef, minMovementY, minMovementX])
+    }, [getOffset, gestureRef, minMovementY, minMovementX])
 
     const onTouchStart: SimpleGesturesEventHandlerTouch['onTouchStart'] = React.useCallback(e => {
         ++gestureRef.current.touches

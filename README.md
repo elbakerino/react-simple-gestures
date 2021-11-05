@@ -97,6 +97,11 @@ The XY-axis is built using the other two.
 - `minMovementX: number`, min. movement in px, for the X-axis, before counting it as direction-change
 - `minMovementY: number`, min. movement in px, for the Y-axis, before counting it as direction-change
 - `noMultiTouch: boolean`, defaults to `false`, when `true` does not execute `move` and `end` actions while the user makes a multi touch
+- `getOffset: (e: TouchEvent | MouseEvent) => { x: number | undefined, y: number | undefined } | undefined`
+    - allows supplying an offset to `move` and `end` calculation
+    - e.g. calculate the movement relatively to start
+    - e.g. allows scrolling to not mess up the pointer direction
+        - e.g. invalid directions where the pane moved, but the cursor kept the same position on the pane
 
 ## Event Results
 

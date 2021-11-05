@@ -45,6 +45,8 @@ export interface SimpleGesturesResult {
     startY: number
     lastX: number
     lastY: number
+    lastOffsetX: number
+    lastOffsetY: number
     // milli px per milli second velocity for X-axis
     mPxPerMsX: number
     // milli px per milli second velocity for Y-axis
@@ -83,6 +85,14 @@ export interface SimpleGesturesOptions {
     minMovementY: number
     // when true, the touch events will not do anything on multi touch
     noMultiTouch: boolean
+    // use an offset for the `move` and `end` calculations, does not influence the `start`
+    // be sure to use e.g. `useCallback` to keep a safe reference for performance reasons
+    getOffset: (e: TouchEvent | MouseEvent) => SimpleGesturesGetOffsetCoordinates | undefined
+}
+
+export interface SimpleGesturesGetOffsetCoordinates {
+    x: number | undefined
+    y: number | undefined
 }
 
 export interface SimpleGesturesInternalState {
@@ -104,6 +114,10 @@ export interface SimpleGesturesInternalState {
     lastStartGridY: number
     // defaults to `-1`
     lastStartTime: number
+    // defaults to `0`
+    startOffsetX: number
+    // defaults to `0`
+    startOffsetY: number
     // defaults to `-1`
     lastTime: number
     // defaults to `-1`

@@ -7,12 +7,14 @@ export const estimateGesture = (
     startY: number,
     lastX: number,
     lastY: number,
+    lastOffsetX: number,
+    lastOffsetY: number,
     touches: number,
     minMovementX: number,
     minMovementY: number,
 ): SimpleGesturesResult => {
-    const movedX = lastX - startX
-    const movedY = lastY - startY
+    const movedX = lastX - lastOffsetX - startX
+    const movedY = lastY - lastOffsetY - startY
     let nameDirX: SimpleGesturesResult['dirX']
     if(movedX > minMovementX) {
         nameDirX = 'right'
@@ -73,6 +75,8 @@ export const estimateGesture = (
         dirX: nameDirX,
         lastX: lastX,
         lastY: lastY,
+        lastOffsetX: lastOffsetX,
+        lastOffsetY: lastOffsetY,
         startX: startX,
         startY: startY,
         // @ts-ignore

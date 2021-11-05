@@ -1,6 +1,16 @@
-import React from 'react'
+import React, { TouchEvent, MouseEvent } from 'react'
 import { SimpleGesturesResult, useSimpleGestures } from 'react-simple-gestures'
 
+const getOffset = (e: TouchEvent | MouseEvent) => {
+    // @ts-ignore
+    const bcr = e.target.getBoundingClientRect()
+    if(!bcr) return undefined
+    // @ts-ignore
+    const ot = bcr.y as number
+    // @ts-ignore
+    const ol = bcr.x as number
+    return {x: ol, y: ot}
+}
 export const GestureArea: React.ComponentType<{
     scrollWrapper: React.MutableRefObject<HTMLDivElement | null>
 }> = (
@@ -21,12 +31,6 @@ export const GestureArea: React.ComponentType<{
         startX: -1,
         startY: -1,
     })
-    const [moveOffset, setMoveOffset] = React.useState({
-        ol: 0,
-        ot: 0,
-        oh: 0,
-        ow: 0,
-    })
     const lastDir = React.useRef<undefined | string>(undefined)
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
@@ -44,6 +48,7 @@ export const GestureArea: React.ComponentType<{
     } = useSimpleGestures({
         minMovementX: minMovementX,
         minMovementY: minMovementY,
+        getOffset: getOffset,
     })
 
     React.useEffect(() => {
@@ -63,12 +68,6 @@ export const GestureArea: React.ComponentType<{
             // @ts-ignore
             const ol = bcr.x
             setLastMove(undefined)
-            setMoveOffset({
-                ol: ol,
-                ot: ot,
-                oh: oh,
-                ow: ow,
-            })
             setLastEnd(undefined)
             setStartPoint({
                 taps: evt.taps,
@@ -88,17 +87,6 @@ export const GestureArea: React.ComponentType<{
                 console.log('move', evt, e)
             }
             lastDir.current = evt.dir
-            // @ts-ignore
-            const oh = e.target.offsetHeight
-            // @ts-ignore
-            const ow = e.target.offsetWidth
-            // @ts-ignore
-            const bcr = e.target.getBoundingClientRect()
-            // @ts-ignore
-            const ot = bcr.y
-            // @ts-ignore
-            const ol = bcr.x
-            setMoveOffset({oh, ow, ot, ol})
             setLastMove(evt)
         })
         const unsubEnv = addListener('end', (evt, e) => {
@@ -195,7 +183,7 @@ export const GestureArea: React.ComponentType<{
                 {/* Connection Line */}
                 {lastMove && startPoint.startX > 0 && startPoint.startY > 0 ?
                     <path
-                        d={`M ${startPoint.startX - startPoint.ol} ${startPoint.startY - startPoint.ot} L ${lastMove.lastX - moveOffset.ol} ${lastMove.lastY - moveOffset.ot}`}
+                        d={`M ${startPoint.startX - startPoint.ol} ${startPoint.startY - startPoint.ot} L ${lastMove.lastX - startPoint.ol - lastMove.lastOffsetX} ${lastMove.lastY - startPoint.ot - lastMove.lastOffsetY}`}
                         fill="none"
                         style={{transition: '50ms ease-in-out stroke'}}
                         stroke={
@@ -216,8 +204,8 @@ export const GestureArea: React.ComponentType<{
                 {lastEnd && startPoint ?
                     <circle
                         className="spot"
-                        cx={lastEnd.lastX - moveOffset.ol}
-                        cy={lastEnd.lastY - moveOffset.ot} r="10"
+                        cx={lastEnd.lastX - startPoint.ol - lastEnd.lastOffsetX}
+                        cy={lastEnd.lastY - startPoint.ot - lastEnd.lastOffsetY} r="10"
                         fill={'#676767'}/>
                     : null}
                 <text
