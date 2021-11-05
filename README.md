@@ -8,11 +8,11 @@
 
 Hook to listen for simple touch and/or mouse gestures on components.
 
-Easily detect the [direction](#directions) at the end of a touch or mouse/drag-movement, use `mPxPerMs` (milli-px-per-milli-second) to determine if it was a longer slide or more a flick or just a tap.
+Easily detect the [direction](#directions) during and at the end of touch or mouse/drag-movement, use the result to determine your action and then re-render. This hook works stateless to improve performance.
 
-[Demo to flick 'n swipe.](https://simple-gestures.bemit.codes), here is [the demo code](./packages/demo/src/GestureArea.tsx)
+[Demo to flick 'n swipe](https://simple-gestures.bemit.codes), here is [the demo code](./packages/demo/src/GestureArea.tsx).
 
-Simply use the `useSimpleGestures` hook and add the handlers to your wanted component with `addListener`.
+The hook `useSimpleGestures` creates event handlers your can just spread to your component, add your handlers with `addListener`.
 
 ```shell
 npm i --save react-simple-gestures

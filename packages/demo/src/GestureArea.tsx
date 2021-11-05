@@ -1,6 +1,9 @@
 import React, { TouchEvent, MouseEvent } from 'react'
 import { SimpleGesturesResult, useSimpleGestures } from 'react-simple-gestures'
 
+// it is important that the reference of this function is safe,
+// e.g. it is not recreated on each render but
+// declared outside the components or with e.g. `useCallback`
 const getOffset = (e: TouchEvent | MouseEvent) => {
     // @ts-ignore
     const bcr = e.target.getBoundingClientRect()
@@ -11,13 +14,11 @@ const getOffset = (e: TouchEvent | MouseEvent) => {
     const ol = bcr.x as number
     return {x: ol, y: ot}
 }
+
 export const GestureArea: React.ComponentType<{
     scrollWrapper: React.MutableRefObject<HTMLDivElement | null>
-}> = (
-    {
-        scrollWrapper,
-    },
-) => {
+}> = ({scrollWrapper}) => {
+
     // states only for this demo:
     const [startPoint, setStartPoint] = React.useState({
         taps: 0,
@@ -30,12 +31,13 @@ export const GestureArea: React.ComponentType<{
         startX: -1,
         startY: -1,
     })
-    const lastDir = React.useRef<undefined | string>(undefined)
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [logEvents, setLogEvents] = React.useState<boolean>(false)
     const [noMultiTouch, setNoMultiTouch] = React.useState<boolean>(false)
     const [relativeToPane, setRelativeToPane] = React.useState<boolean>(true)
+    // as a `ref` and not state to be able to use it inside of another event handler
+    const lastDir = React.useRef<undefined | string>(undefined)
     // <<
 
     // setup of SimpleGestures with safe-to-use functions, also `getState` has a safe reference,
@@ -49,7 +51,7 @@ export const GestureArea: React.ComponentType<{
     } = useSimpleGestures({
         minMovementX: minMovementX,
         minMovementY: minMovementY,
-        noMultiTouch,
+        noMultiTouch: noMultiTouch,
         getOffset: relativeToPane ? getOffset : undefined,
     })
 
@@ -69,6 +71,9 @@ export const GestureArea: React.ComponentType<{
             const ot = bcr.y
             // @ts-ignore
             const ol = bcr.x
+
+            // for production it is helpful to combine all you need into one single state,
+            // not three ones like here:
             setLastMove(undefined)
             setLastEnd(undefined)
             setStartPoint({
@@ -210,6 +215,7 @@ export const GestureArea: React.ComponentType<{
                         cy={lastEnd.lastY - startPoint.ot - lastEnd.lastOffsetY} r="10"
                         fill={'#676767'}/>
                     : null}
+
                 <text
                     style={{
                         fontSize: '0.85rem',
@@ -221,13 +227,14 @@ export const GestureArea: React.ComponentType<{
                     x={startPoint.startX - startPoint.ol}
                     y={startPoint.startY - startPoint.ot + 25}
                 >{lastMove?.dir || lastEnd?.dir}</text>
+
                 <text
                     style={{
                         fontSize: '0.85rem',
                         fontWeight: 'bold',
                         fontFamily: 'Monaco, Consolas, monospace',
                     }}
-                    fill={'#104246'}
+                    fill={'#134f54'}
                     x={'50%'}
                     y={'90%'}
                     textAnchor={'middle'}
@@ -236,6 +243,7 @@ export const GestureArea: React.ComponentType<{
                     {' | '}
                     Touches: {lastEnd?.touches || lastMove?.touches || startPoint?.touches || 0}
                 </text>
+
             </svg>
             <i
                 style={{
