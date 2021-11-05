@@ -15,6 +15,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('point')
@@ -38,6 +40,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -63,6 +67,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('down')
@@ -86,6 +92,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -111,6 +119,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('left')
@@ -135,6 +145,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('right-top')
@@ -154,6 +166,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -175,6 +189,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('right-bottom')
@@ -195,6 +211,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('left-bottom')
@@ -214,6 +232,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -238,6 +258,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('right')
@@ -260,6 +282,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('left')
@@ -281,6 +305,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -305,6 +331,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('down')
@@ -326,6 +354,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -349,6 +379,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('left-top')
@@ -371,6 +403,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -397,6 +431,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('point')
@@ -420,6 +456,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
@@ -445,6 +483,8 @@ describe('estimateGesture', () => {
             startX, startY,
             lastX, lastY,
             0,
+            0,
+            0,
             minMovementX, minMovementY,
         )
         expect(res.dir).toBe('point')
@@ -468,6 +508,8 @@ describe('estimateGesture', () => {
             now, lastStartTime,
             startX, startY,
             lastX, lastY,
+            0,
+            0,
             0,
             minMovementX, minMovementY,
         )
