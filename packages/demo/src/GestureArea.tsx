@@ -18,7 +18,6 @@ export const GestureArea: React.ComponentType<{
         scrollWrapper,
     },
 ) => {
-
     // states only for this demo:
     const [startPoint, setStartPoint] = React.useState({
         taps: 0,
@@ -35,6 +34,8 @@ export const GestureArea: React.ComponentType<{
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [logEvents, setLogEvents] = React.useState<boolean>(false)
+    const [noMultiTouch, setNoMultiTouch] = React.useState<boolean>(false)
+    const [relativeToPane, setRelativeToPane] = React.useState<boolean>(true)
     // <<
 
     // setup of SimpleGestures with safe-to-use functions, also `getState` has a safe reference,
@@ -48,7 +49,8 @@ export const GestureArea: React.ComponentType<{
     } = useSimpleGestures({
         minMovementX: minMovementX,
         minMovementY: minMovementY,
-        getOffset: getOffset,
+        noMultiTouch,
+        getOffset: relativeToPane ? getOffset : undefined,
     })
 
     React.useEffect(() => {
@@ -257,8 +259,11 @@ export const GestureArea: React.ComponentType<{
             }}
         >
             <p style={{fontSize: '0.85rem', margin: '12px'}}>
-                Configurable minimum movements for direction detection,<br/>
-                green = x-axis, blue = y-axis.
+                Configurable minimum movements for direction detection, green = x-axis, blue = y-axis.
+            </p>
+            <p style={{fontSize: '0.85rem', margin: '12px'}}>
+                This demo uses the direction relative to the scroll pane, important for touch,
+                mouse scrolling is prevented during an action.
             </p>
         </div>
         <div
@@ -334,16 +339,43 @@ export const GestureArea: React.ComponentType<{
                 </table>
             </div>
         </div>
-        <button
-            onClick={() => setLogEvents(l => !l)}
-            style={{
-                background: 'transparent',
-                border: '1px solid #fff',
-                color: '#ffffff',
-                padding: '4px 6px',
-                width: 175,
-                margin: '6px auto',
-            }}
-        >{logEvents ? 'Turn off logging events' : 'Log events in dev console'}</button>
+        <div style={{display: 'flex', flexWrap: 'wrap', margin: '0 auto'}}>
+            <button
+                onClick={() => setLogEvents(l => !l)}
+                style={{
+                    cursor: 'pointer',
+                    background: 'transparent',
+                    border: '1px solid #fff',
+                    color: '#ffffff',
+                    padding: '4px 6px',
+                    width: 190,
+                    margin: '6px auto',
+                }}
+            >{logEvents ? 'Turn off: log events in console' : 'Turn on: log events in console'}</button>
+            <button
+                onClick={() => setNoMultiTouch(l => !l)}
+                style={{
+                    cursor: 'pointer',
+                    background: 'transparent',
+                    border: '1px solid #fff',
+                    color: '#ffffff',
+                    padding: '4px 6px',
+                    width: 190,
+                    margin: '6px auto',
+                }}
+            >{noMultiTouch ? 'Turn on: multi-touch' : 'Turn off: multi-touch'}</button>
+            <button
+                onClick={() => setRelativeToPane(l => !l)}
+                style={{
+                    cursor: 'pointer',
+                    background: 'transparent',
+                    border: '1px solid #fff',
+                    color: '#ffffff',
+                    padding: '4px 6px',
+                    width: 190,
+                    margin: '6px auto',
+                }}
+            >{relativeToPane ? 'Turn off: relative-to-pane' : 'Turn on: relative-to-pane'}</button>
+        </div>
     </>
 }
