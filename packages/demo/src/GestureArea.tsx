@@ -21,6 +21,12 @@ export const GestureArea: React.ComponentType<{
         startX: -1,
         startY: -1,
     })
+    const [moveOffset, setMoveOffset] = React.useState({
+        ol: 0,
+        ot: 0,
+        oh: 0,
+        ow: 0,
+    })
     const lastDir = React.useRef<undefined | string>(undefined)
     const [lastMove, setLastMove] = React.useState<undefined | SimpleGesturesResult>(undefined)
     const [lastEnd, setLastEnd] = React.useState<undefined | SimpleGesturesResult>(undefined)
@@ -57,6 +63,12 @@ export const GestureArea: React.ComponentType<{
             // @ts-ignore
             const ol = bcr.x
             setLastMove(undefined)
+            setMoveOffset({
+                ol: ol,
+                ot: ot,
+                oh: oh,
+                ow: ow,
+            })
             setLastEnd(undefined)
             setStartPoint({
                 taps: evt.taps,
@@ -76,6 +88,17 @@ export const GestureArea: React.ComponentType<{
                 console.log('move', evt, e)
             }
             lastDir.current = evt.dir
+            // @ts-ignore
+            const oh = e.target.offsetHeight
+            // @ts-ignore
+            const ow = e.target.offsetWidth
+            // @ts-ignore
+            const bcr = e.target.getBoundingClientRect()
+            // @ts-ignore
+            const ot = bcr.y
+            // @ts-ignore
+            const ol = bcr.x
+            setMoveOffset({oh, ow, ot, ol})
             setLastMove(evt)
         })
         const unsubEnv = addListener('end', (evt, e) => {
@@ -87,7 +110,7 @@ export const GestureArea: React.ComponentType<{
             setLastEnd(evt)
         })
 
-        // don't forget to unsubscribe it at the end
+        // don't forget to unsubscribe the listeners at e.g. unmount
         return () => {
             unsubStart()
             unsubMove()
@@ -111,33 +134,11 @@ export const GestureArea: React.ComponentType<{
                 e.stopPropagation()
             }
         }
-        /*
-        // this blocks all swipes on mobile, seems there is no other scroll-prevention method for mobile
-        const evtTouch = (e: Event) => {
-            const {
-                lastStartTime, lastEndTime,
-            } = getState()
-
-
-            if(
-                lastStartTime !== -1 &&
-                lastEndTime < lastStartTime &&
-                lastDir.current &&
-                lastDir.current !== 'point' &&
-                lastDir.current !== 'up' &&
-                lastDir.current !== 'down'
-            ) {
-                e.preventDefault()
-                e.stopPropagation()
-            }
-        }*/
         scrollWrapper.current?.addEventListener('wheel', evt)
         scrollWrapper.current?.addEventListener('keydown', evt)
-        //scrollWrapper.current?.addEventListener('touchmove', evtTouch)
         return () => {
             scrollWrapper.current?.removeEventListener('wheel', evt)
             scrollWrapper.current?.removeEventListener('keydown', evt)
-            //scrollWrapper.current?.removeEventListener('touchmove', evtTouch)
         }
     }, [scrollWrapper, getState, lastDir])
 
@@ -194,7 +195,7 @@ export const GestureArea: React.ComponentType<{
                 {/* Connection Line */}
                 {lastMove && startPoint.startX > 0 && startPoint.startY > 0 ?
                     <path
-                        d={`M ${startPoint.startX - startPoint.ol} ${startPoint.startY - startPoint.ot} L ${lastMove.lastX - startPoint.ol} ${lastMove.lastY - startPoint.ot}`}
+                        d={`M ${startPoint.startX - startPoint.ol} ${startPoint.startY - startPoint.ot} L ${lastMove.lastX - moveOffset.ol} ${lastMove.lastY - moveOffset.ot}`}
                         fill="none"
                         style={{transition: '50ms ease-in-out stroke'}}
                         stroke={
@@ -215,8 +216,8 @@ export const GestureArea: React.ComponentType<{
                 {lastEnd && startPoint ?
                     <circle
                         className="spot"
-                        cx={lastEnd.lastX - startPoint.ol}
-                        cy={lastEnd.lastY - startPoint.ot} r="10"
+                        cx={lastEnd.lastX - moveOffset.ol}
+                        cy={lastEnd.lastY - moveOffset.ot} r="10"
                         fill={'#676767'}/>
                     : null}
                 <text
