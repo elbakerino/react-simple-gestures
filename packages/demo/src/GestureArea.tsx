@@ -109,6 +109,8 @@ export const GestureArea: React.ComponentType<{
                 e.stopPropagation()
             }
         }
+        /*
+        // this blocks all swipes on mobile, seems there is no other scroll-prevention method for mobile
         const evtTouch = (e: Event) => {
             const {
                 lastStartTime, lastEndTime,
@@ -126,14 +128,14 @@ export const GestureArea: React.ComponentType<{
                 e.preventDefault()
                 e.stopPropagation()
             }
-        }
+        }*/
         scrollWrapper.current?.addEventListener('wheel', evt)
         scrollWrapper.current?.addEventListener('keydown', evt)
-        scrollWrapper.current?.addEventListener('touchmove', evtTouch)
+        //scrollWrapper.current?.addEventListener('touchmove', evtTouch)
         return () => {
             scrollWrapper.current?.removeEventListener('wheel', evt)
-            scrollWrapper.current?.removeEventListener('touchmove', evtTouch)
             scrollWrapper.current?.removeEventListener('keydown', evt)
+            //scrollWrapper.current?.removeEventListener('touchmove', evtTouch)
         }
     }, [scrollWrapper, getState, lastDir])
 
