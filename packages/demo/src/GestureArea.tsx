@@ -12,6 +12,7 @@ export const GestureArea: React.ComponentType<{
     // states only for this demo:
     const [startPoint, setStartPoint] = React.useState({
         taps: 0,
+        touches: 0,
         ol: 0,
         ot: 0,
         oh: 0,
@@ -59,6 +60,7 @@ export const GestureArea: React.ComponentType<{
             setLastEnd(undefined)
             setStartPoint({
                 taps: evt.taps,
+                touches: evt.touches,
                 ol: ol,
                 ot: ot,
                 oh: oh,
@@ -241,7 +243,7 @@ export const GestureArea: React.ComponentType<{
                 >
                     Taps: {startPoint.taps}
                     {' | '}
-                    Touches: {lastEnd?.touches || lastMove?.touches || 0}
+                    Touches: {lastEnd?.touches || lastMove?.touches || startPoint?.touches || 0}
                 </text>
             </svg>
             <i

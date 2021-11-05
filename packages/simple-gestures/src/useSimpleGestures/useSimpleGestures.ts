@@ -28,6 +28,7 @@ export const useSimpleGestures = (
 ): UseSimpleGestures => {
     const gestureRef = React.useRef({
         touches: 0,
+        lastEvent: undefined,
         startX: -1,
         lastX: -1,
         startY: -1,
@@ -47,9 +48,34 @@ export const useSimpleGestures = (
     } as SimpleGesturesInternalState)
 
     const onStart: SimpleGesturesEventHandler['onStart'] = React.useCallback((x, y, e) => {
-        const {lastEndTime, lastStartTime, touches} = gestureRef.current
-        const started = setTouchStart(gestureRef.current, x, y, touchGrid, touchAsSameTap)
-        const {countTaps, lastStartTime: now} = started
+        const {
+            lastEndTime, lastStartTime,
+            touches,
+            lastEvent,
+            lastX, lastY,
+        } = gestureRef.current
+        const now = Date.now()
+        gestureRef.current.lastEvent = e.type as SimpleGesturesInternalState['lastEvent']
+        // each `touchstart` seems to fire also a `mousedown` event
+        // when a touch has happened but no move was registered,
+        // prevent mousedown events, to not count the touchstart double
+        // when no "touchmove" has happened after an `touchstart`, it will bubble further on to the mouse events:
+        // 1) touchstart 2) touchmove 3) touchend 4) mousemove 5) mousedown 6) mouseup 7) click
+        // this condition also prevents the respective `end` calls, as those check if something was started previously
+        if(
+            lastEvent === 'touchend' &&
+            e.type === 'mousedown' &&
+            // when the touchend was just before max. 600ms
+            (now - lastStartTime) < 600 &&
+            // when the last touch point is the same as started now
+            lastX === x &&
+            lastY === y
+            // "has not moved in last event" is already promised by the browser, as then no mousedown would be triggered
+        ) {
+            return
+        }
+        const started = setTouchStart(gestureRef.current, now, x, y, touchGrid, touchAsSameTap)
+        const {countTaps} = started
         gestureRef.current = started
 
         if(gestureRef.current.listeners.start.length === 0) {
@@ -84,6 +110,7 @@ export const useSimpleGestures = (
             return
         }
         const now = Date.now()
+        gestureRef.current.lastEvent = e.type as SimpleGesturesInternalState['lastEvent']
         gestureRef.current.lastX = x
         gestureRef.current.lastY = y
         gestureRef.current.lastTime = now
@@ -107,6 +134,7 @@ export const useSimpleGestures = (
         }
         const now = Date.now()
 
+        gestureRef.current.lastEvent = e.type as SimpleGesturesInternalState['lastEvent']
         gestureRef.current.lastEndTime = now
 
         if(gestureRef.current.listeners.end.length > 0) {

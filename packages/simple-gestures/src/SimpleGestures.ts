@@ -88,6 +88,8 @@ export interface SimpleGesturesOptions {
 export interface SimpleGesturesInternalState {
     // defaults to `0`
     touches: number
+    // the last event that has happened, even when nothing else was executed
+    lastEvent: undefined | 'mousedown' | 'mouseup' | 'mousemove' | 'touchmove' | 'touchstart' | 'touchend'
     // defaults to `-1`
     startX: number
     // defaults to `-1`
